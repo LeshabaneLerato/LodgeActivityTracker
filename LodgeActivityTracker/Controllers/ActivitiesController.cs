@@ -9,7 +9,7 @@ namespace LodgeActivityTracker.Controllers
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private const int PageSize = 5;
+        private const int PageSize = 5; // number of activities per page
 
         public ActivitiesController(ApplicationDbContext context)
         {
@@ -17,12 +17,8 @@ namespace LodgeActivityTracker.Controllers
         }
 
         // GET: Activities
-        public IActionResult Index(int page = 1
-        
-        enhacement
-            var activities = _context.Activities.ToList();
-            return View(activities);
-=======
+        public IActionResult Index(int page = 1)
+        {
             var activities = _context.Activities
                 .OrderBy(a => a.Date);
 
@@ -37,7 +33,7 @@ namespace LodgeActivityTracker.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
 
-            return View(pagedActivities); master
+            return View(pagedActivities);
         }
 
         // GET: Activities/Create
@@ -53,16 +49,17 @@ namespace LodgeActivityTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                activity.Status = "Pending"; // default status
                 _context.Activities.Add(activity);
                 _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+
+                // Redirect to homepage after creating activity
+                return RedirectToAction("Index", "Home");
             }
+
             return View(activity);
         }
- enhacement
-                // Redirect to homepage instead of Activities/Index
-                return RedirectToAction("Index", "Home");
-=======
+
         // GET: Activities/Edit/5
         public IActionResult Edit(int id)
         {
@@ -88,8 +85,11 @@ namespace LodgeActivityTracker.Controllers
             {
                 _context.Update(activity);
                 _context.SaveChanges();
-                return RedirectToAction(nameof(Index master
+
+                // Redirect to homepage after edit (user-friendly)
+                return RedirectToAction("Index", "Home");
             }
+
             return View(activity);
         }
 
@@ -110,9 +110,14 @@ namespace LodgeActivityTracker.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             var activity = _context.Activities.Find(id);
-            _context.Activities.Remove(activity);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            if (activity != null)
+            {
+                _context.Activities.Remove(activity);
+                _context.SaveChanges();
+            }
+
+            // Redirect to homepage after delete
+            return RedirectToAction("Index", "Home");
         }
     }
 }
