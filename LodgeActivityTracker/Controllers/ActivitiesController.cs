@@ -18,7 +18,6 @@ namespace LodgeActivityTracker.Controllers
         public IActionResult Index()
         {
             var activities = _context.Activities.ToList();
-            Console.WriteLine("Activities count: " + activities.Count);
             return View(activities);
         }
 
@@ -39,7 +38,8 @@ namespace LodgeActivityTracker.Controllers
                 _context.Activities.Add(activity);
                 _context.SaveChanges();
 
-                return RedirectToAction(nameof(Index));
+                // Redirect to homepage instead of Activities/Index
+                return RedirectToAction("Index", "Home");
             }
             return View(activity);
         }
