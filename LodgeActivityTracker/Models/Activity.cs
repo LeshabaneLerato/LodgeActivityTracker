@@ -7,14 +7,15 @@ namespace LodgeActivityTracker.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Activity Name is required")]
         public string ActivityName { get; set; }
 
         public string Description { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Date is required")]
         public DateTime Date { get; set; }
 
-        public string Status { get; set; }
+        [Required]
+        public string Status { get; set; } = "Pending"; // default to Pending
     }
 }
