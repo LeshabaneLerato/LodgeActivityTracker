@@ -15,6 +15,7 @@
                     <form asp-action="Create" method="post" class="needs-validation" novalidate>
                         @Html.AntiForgeryToken()
 
+ enhacement
                         <div class="mb-3">
                             <label asp-for="ActivityName" class="form-label fw-bold"></label>
                             <input asp-for="ActivityName" class="form-control" placeholder="Enter activity name" />
@@ -26,6 +27,24 @@
                             <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter a short description"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
+=======
+    <div class="mb-3">
+        <label asp-for="ActivityName"></label>
+        <input asp-for="ActivityName" class="form-control" />
+        <span asp-validation-for="ActivityName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ActivityName" class="form-label"></label>
+        <input asp-for="ActivityName" class="form-control" />
+        <span asp-validation-for="ActivityName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+ master
 
                         <div class="mb-3">
                             <label asp-for="Date" class="form-label fw-bold"></label>
@@ -33,6 +52,7 @@
                             <span asp-validation-for="Date" class="text-danger"></span>
                         </div>
 
+ enhacement
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-check-circle me-1"></i> Save
@@ -47,6 +67,20 @@
         </div>
     </div>
 </div>
+=======
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" class="form-control">
+            <option>Pending</option>
+            <option>Completed</option>
+            <option>Cancelled</option>
+        </select>
+    </div>
+
+
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+ master
 
 @section Scripts {
     <!-- jQuery Validation scripts for client-side validation -->
