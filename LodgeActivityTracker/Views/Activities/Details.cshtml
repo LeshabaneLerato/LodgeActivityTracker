@@ -1,0 +1,33 @@
+﻿@model LodgeActivityTracker.Models.Activity
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        Activity Details
+    </div>
+    <div class="card-body">
+        <p><strong>Name:</strong> @Model.ActivityName</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+        <p>
+            <strong>Status:</strong>
+            @switch (Model.Status)
+            {
+                case "Pending":
+                    <span class="badge bg-warning text-dark">Pending</span>
+                    break;
+                case "Completed":
+                    <span class="badge bg-success">Completed</span>
+                    break;
+                case "Cancelled":
+                    <span class="badge bg-danger">Cancelled</span>
+                    break;
+                default:
+                    <span class="badge bg-secondary">@Model.Status</span>
+                    break;
+            }
+        </p>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
