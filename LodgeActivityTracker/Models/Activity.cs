@@ -12,9 +12,9 @@ namespace LodgeActivityTracker.Models
 
         public string Description { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime ActivityDate { get; set; }
+        [Required]
+        public DateTime Date { get; set; }
 
-        public string Status { get; set; }  // Pending / Completed
+        public string Status { get; set; }
     }
 }

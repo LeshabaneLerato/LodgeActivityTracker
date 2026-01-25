@@ -1,6 +1,5 @@
 ﻿using LodgeActivityTracker.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace LodgeActivityTracker.Data
 {

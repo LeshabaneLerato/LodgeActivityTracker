@@ -18,24 +18,27 @@ namespace LodgeActivityTracker.Controllers
         public IActionResult Index()
         {
             var activities = _context.Activities.ToList();
+            Console.WriteLine("Activities count: " + activities.Count);
             return View(activities);
         }
 
-        // GET: Create
+        // GET: Activities/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Create
+        // POST: Activities/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Activity activity)
         {
             if (ModelState.IsValid)
             {
-                activity.Status = "Pending";
+                activity.Status = "Pending"; // default status
                 _context.Activities.Add(activity);
                 _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(activity);

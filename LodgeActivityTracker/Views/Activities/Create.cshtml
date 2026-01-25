@@ -2,23 +2,32 @@
 
 <h2>Add Activity</h2>
 
-<form asp-action="Create">
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
     <div class="mb-3">
-        <label>Activity Name</label>
+        <label asp-for="ActivityName" class="form-label"></label>
         <input asp-for="ActivityName" class="form-control" />
+        <span asp-validation-for="ActivityName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label>Description</label>
+        <label asp-for="Description" class="form-label"></label>
         <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label>Date</label>
-        <input asp-for="ActivityDate" type="date" class="form-control" />
+        <label asp-for="Date" class="form-label"></label>
+        <input asp-for="Date" type="date" class="form-control" />
+        <span asp-validation-for="Date" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">
-        Save
-    </button>
+    <button type="submit" class="btn btn-success">Save</button>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
