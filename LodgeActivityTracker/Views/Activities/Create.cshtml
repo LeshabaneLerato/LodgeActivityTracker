@@ -1,10 +1,33 @@
 ﻿@model LodgeActivityTracker.Models.Activity
 
-<h2>Add Activity</h2>
+@{
+    ViewData["Title"] = "Add Activity";
+}
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Add New Activity</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
 
+ enhacement
+                        <div class="mb-3">
+                            <label asp-for="ActivityName" class="form-label fw-bold"></label>
+                            <input asp-for="ActivityName" class="form-control" placeholder="Enter activity name" />
+                            <span asp-validation-for="ActivityName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter a short description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+=======
     <div class="mb-3">
         <label asp-for="ActivityName"></label>
         <input asp-for="ActivityName" class="form-control" />
@@ -21,13 +44,30 @@
         <label asp-for="Description" class="form-label"></label>
         <input asp-for="Description" class="form-control" />
     </div>
+ master
 
-    <div class="mb-3">
-        <label asp-for="Date" class="form-label"></label>
-        <input asp-for="Date" type="date" class="form-control" />
-        <span asp-validation-for="Date" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="Date" class="form-label fw-bold"></label>
+                            <input asp-for="Date" type="date" class="form-control" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+
+ enhacement
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-1"></i> Save
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
+</div>
+=======
     <div class="mb-3">
         <label asp-for="Status" class="form-label"></label>
         <select asp-for="Status" class="form-control">
@@ -40,9 +80,28 @@
 
     <button type="submit" class="btn btn-success">Save</button>
 </form>
+ master
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <!-- jQuery Validation scripts for client-side validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 }

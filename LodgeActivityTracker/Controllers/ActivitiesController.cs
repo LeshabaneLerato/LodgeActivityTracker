@@ -17,8 +17,12 @@ namespace LodgeActivityTracker.Controllers
         }
 
         // GET: Activities
-        public IActionResult Index(int page = 1)
-        {
+        public IActionResult Index(int page = 1
+        
+        enhacement
+            var activities = _context.Activities.ToList();
+            return View(activities);
+=======
             var activities = _context.Activities
                 .OrderBy(a => a.Date);
 
@@ -33,7 +37,7 @@ namespace LodgeActivityTracker.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
 
-            return View(pagedActivities);
+            return View(pagedActivities); master
         }
 
         // GET: Activities/Create
@@ -55,7 +59,10 @@ namespace LodgeActivityTracker.Controllers
             }
             return View(activity);
         }
-
+ enhacement
+                // Redirect to homepage instead of Activities/Index
+                return RedirectToAction("Index", "Home");
+=======
         // GET: Activities/Edit/5
         public IActionResult Edit(int id)
         {
@@ -81,7 +88,7 @@ namespace LodgeActivityTracker.Controllers
             {
                 _context.Update(activity);
                 _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index master
             }
             return View(activity);
         }
