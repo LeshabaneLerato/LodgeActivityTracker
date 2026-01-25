@@ -1,8 +1,98 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5 text-center">
+
+    <!-- Logo -->
+    <img src="~/images/logo.png"
+         alt="Lodge Activity Tracker Logo"
+         class="img-fluid mb-4"
+         style="max-height:120px;" />
+
+    <!-- Welcome Section -->
+    <h1 class="display-4 fw-bold">Welcome to Lodge Activity Tracker</h1>
+    <p class="lead mb-4">
+        Easily log, track, and manage all your lodge activities in one place.
+    </p>
+
+    <!-- Welcome Illustration -->
+    <img src="~/images/welcome illustration.png"
+         alt="Welcome illustration"
+         class="img-fluid my-4"
+         style="max-width:500px;" />
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-center gap-3 flex-wrap mb-5">
+        <a asp-controller="Activities" asp-action="Create" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle me-1"></i> Add Activity
+        </a>
+        <a asp-controller="Activities" asp-action="Index" class="btn btn-primary btn-lg">
+            <i class="bi bi-list-ul me-1"></i> View Activities
+        </a>
+    </div>
+</div>
+
+<!-- Lodge Services Section -->
+<div class="container mt-5">
+
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Our Lodge Services</h2>
+        <p class="lead">
+            Organize events, manage activities, and keep everything running smoothly.
+        </p>
+
+        <!-- Lodge Services Image -->
+        <img src="~/images/lodge services.png"
+             alt="Lodge Services"
+             class="img-fluid mt-4"
+             style="max-width:400px;" />
+    </div>
+
+    <!-- Action Cards -->
+    <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+
+        <!-- Add Activity Card -->
+        <div class="col">
+            <div class="card shadow-sm h-100 border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-plus-circle display-1 text-success mb-3"></i>
+                    <h5 class="card-title fw-bold">Add New Activity</h5>
+                    <p class="card-text">
+                        Create a new activity and keep track of its details and status.
+                    </p>
+                    <a asp-controller="Activities" asp-action="Create" class="btn btn-success btn-lg">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Activities Card -->
+        <div class="col">
+            <div class="card shadow-sm h-100 border-primary">
+                <div class="card-body text-center">
+                    <i class="bi bi-list-ul display-1 text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">View All Activities</h5>
+                    <p class="card-text">
+                        Browse all activities, edit, or delete them easily.
+                    </p>
+                    <a asp-controller="Activities" asp-action="Index" class="btn btn-primary btn-lg">
+                        View Activities
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Why Section -->
+    <div class="text-center mt-5">
+        <h3 class="fw-bold">Why use Lodge Activity Tracker?</h3>
+        <p class="lead">
+            Keep all your lodge events organized, monitor progress,
+            and ensure nothing is missed. Simple, intuitive, and user-friendly.
+        </p>
+    </div>
+
 </div>
