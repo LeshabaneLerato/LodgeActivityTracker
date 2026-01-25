@@ -15,44 +15,39 @@
                     <form asp-action="Create" method="post" class="needs-validation" novalidate>
                         @Html.AntiForgeryToken()
 
- enhacement
+                        <!-- Activity Name -->
                         <div class="mb-3">
                             <label asp-for="ActivityName" class="form-label fw-bold"></label>
                             <input asp-for="ActivityName" class="form-control" placeholder="Enter activity name" />
                             <span asp-validation-for="ActivityName" class="text-danger"></span>
                         </div>
 
+                        <!-- Description -->
                         <div class="mb-3">
                             <label asp-for="Description" class="form-label fw-bold"></label>
                             <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter a short description"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-=======
-    <div class="mb-3">
-        <label asp-for="ActivityName"></label>
-        <input asp-for="ActivityName" class="form-control" />
-        <span asp-validation-for="ActivityName" class="text-danger"></span>
-    </div>
 
-    <div class="mb-3">
-        <label asp-for="ActivityName" class="form-label"></label>
-        <input asp-for="ActivityName" class="form-control" />
-        <span asp-validation-for="ActivityName" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <input asp-for="Description" class="form-control" />
-    </div>
- master
-
+                        <!-- Date -->
                         <div class="mb-3">
                             <label asp-for="Date" class="form-label fw-bold"></label>
                             <input asp-for="Date" type="date" class="form-control" />
                             <span asp-validation-for="Date" class="text-danger"></span>
                         </div>
 
- enhacement
+                        <!-- Status -->
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label fw-bold"></label>
+                            <select asp-for="Status" class="form-control">
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-check-circle me-1"></i> Save
@@ -67,20 +62,6 @@
         </div>
     </div>
 </div>
-=======
-    <div class="mb-3">
-        <label asp-for="Status" class="form-label"></label>
-        <select asp-for="Status" class="form-control">
-            <option>Pending</option>
-            <option>Completed</option>
-            <option>Cancelled</option>
-        </select>
-    </div>
-
-
-    <button type="submit" class="btn btn-success">Save</button>
-</form>
- master
 
 @section Scripts {
     <!-- jQuery Validation scripts for client-side validation -->
