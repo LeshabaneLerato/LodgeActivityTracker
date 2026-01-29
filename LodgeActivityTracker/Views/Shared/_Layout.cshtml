@@ -1,4 +1,5 @@
 ﻿@using LodgeActivityTracker.Helpers
+@using LodgeActivityTracker.Models
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +7,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LodgeActivityTracker</title>
 
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LodgeActivityTracker.styles.css" asp-append-version="true" />
+
+    <style>
+        /* QR Box Styling */
+        #qrBox {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 0.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: max-content;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+            #qrBox.show {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            #qrBox img {
+                width: 120px;
+                max-width: 30vw;
+                height: auto;
+                border-radius: 10px;
+            }
+
+        #qrToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+      
+        }
+
+        #qrBox img {
+            max-width: 40vw;
+        }
+
+        
+    </style>
 </head>
 <body>
     <header>
@@ -41,7 +85,6 @@
     </header>
 
     <div class="container">
-        <!-- Success/Error alerts -->
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show mt-2">
@@ -68,29 +111,58 @@
         </div>
     </footer>
 
-    <!-- QR Code -->
+    @* QR Code Razor Logic *@
     @{
         var pageTitle = ViewData["Title"]?.ToString() ?? "";
         string qrCodeImage = "";
+        string currentUrl = "";
+
         if (!pageTitle.Contains("Dashboard"))
         {
-            string currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+            currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
             qrCodeImage = QRCodeHelper.GenerateQRCodeBase64(currentUrl);
         }
     }
+
     @if (!string.IsNullOrEmpty(qrCodeImage))
     {
-        <div style="position:fixed; bottom:20px; right:20px; z-index:1000;">
-            <img src="@qrCodeImage" alt="QR Code" style="width:100px; height:100px; border:1px solid #ccc; padding:5px; background:white;" />
+        <div id="qrToggle">
+            <button class="btn btn-outline-secondary btn-sm" title="Show/Hide QR Code">
+                <i class="bi bi-qr-code"></i>
+            </button>
+        </div>
+
+        <div id="qrBox">
+            <a href="@currentUrl" target="_blank">
+                <img src="@qrCodeImage" alt="QR Code" />
+            </a>
+            <p class="small mt-1 mb-1">Scan or click to open this page</p>
+            <button class="btn btn-sm btn-outline-primary" id="copyUrlBtn">
+                <i class="bi bi-clipboard"></i> Copy URL
+            </button>
+            <a href="@qrCodeImage" download="QRCode.png" class="btn btn-sm btn-outline-success mt-1">
+                <i class="bi bi-download"></i> Download
+            </a>
         </div>
     }
 
-    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // QR Toggle with slide/fade
+        $(document).ready(function () {
+            $("#qrToggle button").click(function () {
+                $("#qrBox").toggleClass("show");
+            });
+
+            // Copy URL to clipboard
+            $("#copyUrlBtn").click(function () {
+                navigator.clipboard.writeText("@currentUrl")
+                    .then(() => alert("URL copied to clipboard!"))
+                    .catch(() => alert("Failed to copy URL"));
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
