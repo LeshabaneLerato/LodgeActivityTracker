@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using LodgeActivityTracker.Data;
-using LodgeActivityTracker.Models;
+﻿using LodgeActivityTracker.Data;
+using LodgeActivityTracker.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Linq;
-
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -14,22 +14,17 @@ public class AdminController : Controller
         _context = context;
     }
 
-    public IActionResult Dashboard()
+    public async Task<IActionResult> Dashboard()
     {
         var model = new AdminDashboardViewModel
         {
-            TotalActivities = _context.Activities.Count(),
-            ActivitiesToday = _context.Activities
-                .Count(a => a.Date.Date == DateTime.Today),
-            RecentActivities = _context.Activities
+            TotalActivities = await _context.Activities.CountAsync(),
+            RecentActivities = await _context.Activities
                 .OrderByDescending(a => a.Date)
                 .Take(5)
-                .ToList()
+                .ToListAsync()
         };
 
         return View(model);
     }
-
 }
-    
-
