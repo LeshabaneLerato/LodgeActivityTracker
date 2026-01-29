@@ -1,11 +1,13 @@
 ﻿using LodgeActivityTracker.Models;
-using System.Collections.Generic;
 
-namespace LodgeActivityTracker.ViewModels
+namespace LodgeActivityTracker.Models.ViewModels
 {
     public class AdminDashboardViewModel
     {
-        public int TotalActivities { get; set; }
         public List<Activity> RecentActivities { get; set; } = new();
+        public int TotalActivities { get; set; }
+        public int PendingCount { get; set; }
+        public int ApprovedCount { get; set; }
+        public int RejectedCount { get; set; }
     }
 }

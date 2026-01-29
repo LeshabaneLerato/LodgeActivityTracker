@@ -31,16 +31,20 @@ public class ActivitiesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Activity activity)
     {
-        if (!ModelState.IsValid)
-            return View(activity);
+        if (ModelState.IsValid)
+        {
+            // FORCE default status
+            activity.Status = "Pending";
 
-        _context.Activities.Add(activity);
-        await _context.SaveChangesAsync();
+            _context.Add(activity);
+            await _context.SaveChangesAsync();
 
-        TempData["SuccessMessage"] = "Activity created successfully!";
-        return RedirectToAction(nameof(Index));
+            TempData["SuccessMessage"] = "Activity submitted and awaiting admin approval.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(activity);
     }
-
     // GET: Activities/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
