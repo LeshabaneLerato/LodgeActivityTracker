@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using LodgeActivityTracker.Models;
+﻿using LodgeActivityTracker.Models;
+using System.Collections.Generic;
 
-public class AdminDashboardViewModel
+namespace LodgeActivityTracker.ViewModels
 {
-    public int TotalActivities { get; set; }
-    public int ActivitiesToday { get; set; }
-    public List<Activity> RecentActivities { get; set; }
+    public class AdminDashboardViewModel
+    {
+        public int TotalActivities { get; set; }
+        public List<Activity> RecentActivities { get; set; } = new();
+    }
 }
