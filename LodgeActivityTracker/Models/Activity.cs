@@ -14,6 +14,7 @@ namespace LodgeActivityTracker.Models
 
         [Required(ErrorMessage = "Date is required")]
         public DateTime Date { get; set; }
+        public string Title { get; set; }
 
         [Required]
         public string Status { get; set; } = "Pending"; // default to Pending
