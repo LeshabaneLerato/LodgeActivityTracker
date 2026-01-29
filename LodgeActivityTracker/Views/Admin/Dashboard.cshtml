@@ -1,36 +1,35 @@
-﻿@model LodgeActivityTracker.Models.ViewModels.AdminDashboardViewModel
+﻿@model List<LodgeActivityTracker.Models.Activity>
 
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h2 class="mb-3">Admin Dashboard</h2>
-
-<div class="row mb-4">
-    <div class="col-md-3"><strong>Total:</strong> @Model.TotalActivities</div>
-    <div class="col-md-3 text-warning"><strong>Pending:</strong> @Model.PendingCount</div>
-    <div class="col-md-3 text-success"><strong>Approved:</strong> @Model.ApprovedCount</div>
-    <div class="col-md-3 text-danger"><strong>Rejected:</strong> @Model.RejectedCount</div>
-</div>
+<h2 class="mb-4">Admin Dashboard</h2>
 
 <table class="table table-bordered table-striped">
-    <thead>
+    <thead class="table-dark">
         <tr>
             <th>Title</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Action</th>
+            <th style="width:200px;">Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var activity in Model.RecentActivities)
+        @foreach (var activity in Model)
         {
             <tr>
                 
                 <td>@activity.Date.ToShortDateString()</td>
-                <td>@activity.Status</td>
                 <td>
-                    @if (activity.Status == "Pending")
+                    <span class="badge
+                        @(activity.Status == "Approved" ? "bg-success" :
+                                                activity.Status == "Rejected" ? "bg-danger" : "bg-warning")">
+                    @activity.Status
+                </span>
+            </td>
+            <td>
+                @if (activity.Status == "Pending")
                     {
                         <form asp-action="Approve" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@activity.Id" />
@@ -41,6 +40,10 @@
                             <input type="hidden" name="id" value="@activity.Id" />
                             <button class="btn btn-danger btn-sm">Reject</button>
                         </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No actions</span>
                     }
                 </td>
             </tr>

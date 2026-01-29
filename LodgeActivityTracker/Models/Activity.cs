@@ -17,6 +17,7 @@ namespace LodgeActivityTracker.Models
       
 
         [Required]
-        public string Status { get; set; } = "Pending"; // default to Pending
+
+        public string Status { get; set; } = "Pending"; // Default
     }
 }
