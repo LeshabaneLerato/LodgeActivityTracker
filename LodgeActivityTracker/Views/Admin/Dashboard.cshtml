@@ -1,0 +1,58 @@
+﻿@model AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5>Total Activities</h5>
+                    <h2>@Model.TotalActivities</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5>Activities Today</h5>
+                    <h2>@Model.ActivitiesToday</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            Recent Activities
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var activity in Model.RecentActivities)
+                    {
+                        <tr>
+                            <td>@activity.Date.ToShortDateString()</td>
+                            <td>@activity.Title</td>
+                            <td>@activity.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
