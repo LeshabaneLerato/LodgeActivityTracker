@@ -1,30 +1,62 @@
 ﻿using LodgeActivityTracker.Data;
-using LodgeActivityTracker.ViewModels;
+using LodgeActivityTracker.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Authorize(Roles = "Admin")]
-public class AdminController : Controller
+namespace LodgeActivityTracker.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public AdminController(ApplicationDbContext context)
+    [Authorize(Roles = "Admin")]
+    public class AdminController : Controller
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task<IActionResult> Dashboard()
-    {
-        var model = new AdminDashboardViewModel
+        public AdminController(ApplicationDbContext context)
         {
-            TotalActivities = await _context.Activities.CountAsync(),
-            RecentActivities = await _context.Activities
-                .OrderByDescending(a => a.Date)
-                .Take(5)
-                .ToListAsync()
-        };
+            _context = context;
+        }
 
-        return View(model);
+        [HttpGet]
+        public async Task<IActionResult> Dashboard()
+        {
+            var activities = await _context.Activities
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+
+            var vm = new AdminDashboardViewModel
+            {
+                RecentActivities = activities,
+                TotalActivities = activities.Count,
+                PendingCount = activities.Count(a => a.Status == "Pending"),
+                ApprovedCount = activities.Count(a => a.Status == "Approved"),
+                RejectedCount = activities.Count(a => a.Status == "Rejected")
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var activity = await _context.Activities.FindAsync(id);
+            if (activity == null) return NotFound();
+
+            activity.Status = "Approved";
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Reject(int id)
+        {
+            var activity = await _context.Activities.FindAsync(id);
+            if (activity == null) return NotFound();
+
+            activity.Status = "Rejected";
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Dashboard));
+        }
     }
 }
