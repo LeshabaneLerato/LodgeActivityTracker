@@ -1,79 +1,38 @@
-﻿@model IEnumerable<LodgeActivityTracker.Models.Activity>
-
+﻿@model IEnumerable<Activity>
 @{
     ViewData["Title"] = "Activities";
-    int currentPage = ViewBag.CurrentPage ?? 1;
-    int totalPages = ViewBag.TotalPages ?? 1;
 }
-<div class="container mt-4">
-    <!-- Logo -->
-    <div class="text-center mb-4">
-        <img src="~/images/logo.png" alt="logo" class="img-fluid" style="max-height:100px;">
-    </div>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">All Activities</h2>
-        <a asp-action="Create" class="btn btn-success">
-            <i class="bi bi-plus-circle me-1"></i> Add Activity
-        </a>
-    </div>
+<h2>Activities</h2>
+<a asp-action="Create" class="btn btn-success mb-3"><i class="bi bi-plus-circle"></i> Add Activity</a>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info text-center">
-            No activities found. <a asp-action="Create">Add a new activity</a>.
-        </div>
-    }
-    else
-    {
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var activity in Model)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">@activity.ActivityName</h5>
-                            <p class="card-text">@activity.Description</p>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-                            <small class="text-muted">@activity.Date.ToString("dd MMM yyyy")</small>
-                            <span class="badge
-                                                @(activity.Status == "Pending" ? "bg-secondary" :
-                                                                            activity.Status == "Completed" ? "bg-success" :
-                                                                            "bg-danger")">
-                        @activity.Status
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.ActivityName</td>
+                <td>@item.Description</td>
+                <td>
+                    <span class="badge @(item.Status == "Completed" ? "bg-success" : item.Status == "Pending" ? "bg-warning text-dark" : "bg-danger")">
+                        @item.Status
                     </span>
-                </div>
-                <div class="card-footer d-flex justify-content-between mt-2">
-                    <a asp-action="Edit" asp-route-id="@activity.Id" class="btn btn-warning btn-sm text-dark">
-                        <i class="bi bi-pencil-square me-1"></i> Edit
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@activity.Id" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash me-1"></i> Delete
-                    </a>
-                </div>
-            </div>
-        </div>
-                }
-        </div>
-
-        <!-- Pagination -->
-        <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">Previous</a>
-                </li>
-                @for (int i = 1; i <= totalPages; i++)
-                {
-                    <li class="page-item @(i == currentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                    </li>
-                }
-                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Next</a>
-                </li>
-            </ul>
-        </nav>
-    }
-</div>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
