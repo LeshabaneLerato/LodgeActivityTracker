@@ -1,9 +1,10 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using LodgeActivityTracker.Helpers
 
 @{
     ViewData["Title"] = "Home";
 
-    // Use Context.Request to get the current URL
+    // Get full URL of the current page
     string currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
 
     // Generate QR code as Base64 string
@@ -12,5 +13,11 @@
 
 <h2>Home Page</h2>
 
-<!-- Display the QR code -->
-<img src="@qrCodeImage" alt="QR Code" style="width:150px; height:150px;" />
+@if (!string.IsNullOrEmpty(qrCodeImage))
+{
+    <img src="@qrCodeImage" alt="QR Code" style="width:150px; height:150px;" />
+}
+else
+{
+    <p>QR code could not be generated.</p>
+}
