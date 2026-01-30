@@ -1,83 +1,72 @@
-﻿# Lodge Activity Tracker - Requirements
+﻿# Lodge Activity Tracker – System Requirements and Architecture
 
-## 1. Introduction
-The Lodge Activity Tracker is a web-based application designed to manage lodge-related activities, track user participation, and provide administrative oversight. It is built using **ASP.NET Core MVC** with **Entity Framework Core** for database operations.
+## 1. System Overview
+Lodge Activity Tracker is a web-based application developed using **ASP.NET Core MVC**.  
+The system is designed to manage lodge activities, track attendance via QR codes, approve activities, and provide an admin dashboard for centralized management.
+
+---
 
 ## 2. Functional Requirements
-1. **User Management**
-   - Users can register and log in.
-   - Admins can manage users, approve activities, and monitor activity status.
 
-2. **Activity Management**
-   - Admins can create, edit, delete, and approve activities.
-   - Activities have the following properties:
-     - Title
-     - Description
-     - Date & Time
-     - Status (Pending, Approved, Rejected)
-     - QR Code for attendance tracking
-   - Users can view activities and register attendance via QR codes.
+1. The system shall allow admins to add, edit, view, and delete lodge activities.
+2. The system shall store activity details including title, description, date & time, status, and QR code.
+3. The system shall generate a QR code for each activity for attendance tracking.
+4. The system shall allow admins to approve or reject activities.
+5. The system shall track user attendance for each activity using QR codes.
+6. The system shall display a dashboard with summary information such as total activities, pending approvals, and approved activities.
+7. The system shall provide secure login for admins using ASP.NET Identity.
+8. The system shall enforce role-based access control for admin and user operations.
 
-3. **Dashboard**
-   - Admin dashboard shows:
-     - List of activities
-     - Pending approvals
-     - Activity statistics
-
-4. **Notifications**
-   - Optional: Notify users when activities are approved or updated.
-
-5. **Security**
-   - Identity-based authentication for admin login.
-   - Role-based access control for activities and admin operations.
+---
 
 ## 3. Non-Functional Requirements
-1. **Performance**
-   - Load dashboard within 3 seconds.
-   - Efficient queries for activities list.
 
-2. **Usability**
-   - User-friendly and responsive UI.
-   - QR code generation for easy activity check-in.
+1. The system shall be easy to use and user-friendly.
+2. The system shall validate all user input.
+3. The system shall store data securely using a relational database.
+4. The system shall provide acceptable response time for all operations.
+5. The system shall be maintainable, scalable, and extensible.
+6. The system shall follow MVC architectural best practices.
 
-3. **Scalability**
-   - Database design supports multiple lodges and multiple activities.
+---
 
-4. **Maintainability**
-   - Clean MVC architecture for easier maintenance.
-   - Seeders and helpers to reduce repetitive code.
+## 4. Entity Relationship Diagram (ERD)
 
-## 4. System Requirements
-- .NET 7.0 or later
-- ASP.NET Core MVC
-- Entity Framework Core
-- SQL Server or SQLite (for development)
-- Browser: Chrome, Firefox, Edge
+```mermaid
+erDiagram
+    USER ||--o{ USER_ACTIVITY : attends
+    ACTIVITY ||--|{ USER_ACTIVITY : includes
+    ACTIVITY ||--|{ ACTIVITY_APPROVAL : approved_by
+    ACTIVITY_STATUS ||--o{ ACTIVITY : has_status
 
-## 5. ERD Diagram
-Below is the ERD diagram representing the database structure for the Lodge Activity Tracker:
+    USER {
+        int UserId
+        string UserName
+        string Email
+    }
 
-![ERD Diagram](./Requirements.png)
+    ACTIVITY {
+        int ActivityId
+        string Title
+        string Description
+        date DateTime
+        string QRCode
+    }
 
-**Entities:**
-- **User**: IdentityUser (from ASP.NET Identity)
-- **Activity**
-  - Id
-  - Title
-  - Description
-  - DateTime
-  - StatusId (FK → ActivityStatus)
-  - ApprovalId (FK → ActivityApproval)
-  - QRCode
-- **ActivityStatus**
-  - Id
-  - Name (Pending, Approved, Rejected)
-- **ActivityApproval**
-  - Id
-  - ApprovedBy (FK → Admin)
-  - ApprovedDate
+    USER_ACTIVITY {
+        int UserActivityId
+        int UserId
+        int ActivityId
+        date AttendanceDate
+    }
 
-**Relationships:**
-- ActivityStatus ↔ Activity (1:N)
-- ActivityApproval ↔ Activity (1:1)
-- User ↔ Activity (Many-to-Many for attendance)
+    ACTIVITY_STATUS {
+        int StatusId
+        string Name
+    }
+
+    ACTIVITY_APPROVAL {
+        int ApprovalId
+        int ApprovedBy (FK → Admin)
+        date ApprovedDate
+    }

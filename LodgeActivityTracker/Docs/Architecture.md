@@ -1,65 +1,93 @@
-﻿# Lodge Activity Tracker - Architecture
+﻿# Lodge Activity Tracker – System Architecture
 
-## 1. Overview
-The application follows a **Layered MVC Architecture**:
+## 1. Architecture Overview
+Lodge Activity Tracker follows the **Model-View-Controller (MVC)** architecture pattern.  
+This architecture separates the application into three main layers: Model, View, and Controller, improving maintainability, scalability, and testability.
 
-- **Models**: Represent database entities (Activity, AdminDashboardViewModel, ErrorViewModel)
-- **ViewModels**: For passing data to views (AdminDashboardViewModel)
-- **Views**: Razor pages for UI (Admin, Account, Activities, Home, Shared)
-- **Controllers**: Handle user requests and business logic (AdminController, AccountController, ActivitiesController, HomeController)
-- **Data Layer**: ApplicationDbContext for database access, Migrations for schema evolution
-- **Helpers**: QRCodeHelper for QR code generation
-- **Seeders**: AdminSeeder for seeding default admin
+---
 
-## 2. Component Diagram
-![Architecture Diagram](./architecture(3).png)
+## 2. MVC Architecture
 
-**Components:**
-1. **Controllers**
-   - Handle HTTP requests and return Views or JSON
-2. **Models**
-   - Represent database entities
-3. **ViewModels**
-   - Combine multiple models for view rendering
-4. **Data Layer**
-   - ApplicationDbContext
-   - Migrations
-5. **Helpers**
-   - QRCodeHelper for generating QR codes
-6. **Seeders**
-   - AdminSeeder for default admin
+### 2.1 Model Layer
+The Model layer represents the application’s data and business rules.  
+It includes the following models:
+- Activity
+- ActivityStatus
+- ActivityApproval
+- UserActivity (tracking attendance)
+- ErrorViewModel
+- AdminDashboardViewModel
 
-## 3. Flow
-1. User sends HTTP request → Controller.
-2. Controller interacts with **DbContext** → retrieves data from SQL Server.
-3. Controller passes data to **ViewModel**.
-4. **View** renders UI.
-5. Optional: Helper classes used (e.g., QRCode generation).
+### 2.2 View Layer
+The View layer is responsible for displaying data to the user.  
+It uses **Razor views** with HTML, CSS, and optionally Bootstrap for styling.  
+Views are organized into folders:
+- Admin
+- Account
+- Activities
+- Home
+- Shared
+- QRCode
 
-## 4. ERD Diagram
-For a clear understanding of the data model, refer to the ERD diagram below:
+### 2.3 Controller Layer
+The Controller layer handles user requests, processes business logic, and communicates between the Model and View layers.  
+Controllers include:
+- AdminController
+- AccountController
+- ActivitiesController
+- HomeController
 
-![ERD Diagram](./Requirements.png)
+---
 
-**Entities:**
-- **User**: IdentityUser (from ASP.NET Identity)
-- **Activity**
-  - Id
-  - Title
-  - Description
-  - DateTime
-  - StatusId (FK → ActivityStatus)
-  - ApprovalId (FK → ActivityApproval)
-  - QRCode
-- **ActivityStatus**
-  - Id
-  - Name (Pending, Approved, Rejected)
-- **ActivityApproval**
-  - Id
-  - ApprovedBy (FK → Admin)
-  - ApprovedDate
+## 3. Technology Stack
+- **Frontend:** HTML, CSS, Bootstrap, Razor Views
+- **Backend:** ASP.NET Core MVC (C#)
+- **Database:** SQL Server (or SQLite for development)
+- **ORM:** Entity Framework Core
+- **QR Code Generation:** QRCodeHelper class
+- **Authentication & Authorization:** ASP.NET Identity
 
-**Relationships:**
-- ActivityStatus ↔ Activity (1:N)
-- ActivityApproval ↔ Activity (1:1)
-- User ↔ Activity (Many-to-Many for attendance)
+---
+
+## 4. Entity Relationship Diagram (ERD)
+
+The ERD illustrates the structure of the database and the relationships between the core entities used in the Lodge Activity Tracker system.
+
+```mermaid
+erDiagram
+    USER ||--o{ USER_ACTIVITY : attends
+    ACTIVITY ||--|{ USER_ACTIVITY : includes
+    ACTIVITY ||--|{ ACTIVITY_APPROVAL : approved_by
+    ACTIVITY_STATUS ||--o{ ACTIVITY : has_status
+
+    USER {
+        int UserId
+        string UserName
+        string Email
+    }
+
+    ACTIVITY {
+        int ActivityId
+        string Title
+        string Description
+        date DateTime
+        string QRCode
+    }
+
+    USER_ACTIVITY {
+        int UserActivityId
+        int UserId
+        int ActivityId
+        date AttendanceDate
+    }
+
+    ACTIVITY_STATUS {
+        int StatusId
+        string Name
+    }
+
+    ACTIVITY_APPROVAL {
+        int ApprovalId
+        int ApprovedBy (FK → Admin)
+        date ApprovedDate
+    }
