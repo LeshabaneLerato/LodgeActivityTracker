@@ -1,7 +1,6 @@
 ﻿using LodgeActivityTracker.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [Authorize(Roles = "Admin")]
 public class AdminController : Controller
@@ -13,19 +12,13 @@ public class AdminController : Controller
         _context = context;
     }
 
-    // ✅ THIS FIXES /Admin/Dashboard NOT FOUND
-    [HttpGet]
-    public async Task<IActionResult> Dashboard()
+    public IActionResult Dashboard()
     {
-        var activities = await _context.Activities
-            .OrderByDescending(a => a.Date)
-            .ToListAsync();
-
-        return View(activities); // IMPORTANT
+        var activities = _context.Activities.ToList();
+        return View(activities);
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Approve(int id)
     {
         var activity = await _context.Activities.FindAsync(id);
@@ -38,7 +31,6 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Reject(int id)
     {
         var activity = await _context.Activities.FindAsync(id);

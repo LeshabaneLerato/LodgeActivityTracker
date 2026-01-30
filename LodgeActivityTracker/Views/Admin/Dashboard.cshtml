@@ -1,44 +1,68 @@
 ﻿@model List<LodgeActivityTracker.Models.Activity>
-
 @{
     ViewData["Title"] = "Admin Dashboard";
+    var totalPending = Model.Count(a => a.Status == "Pending");
+    var totalApproved = Model.Count(a => a.Status == "Approved");
+    var totalRejected = Model.Count(a => a.Status == "Rejected");
 }
 
 <h2 class="mb-4">Admin Dashboard</h2>
 
-<table class="table table-bordered table-striped">
+<div class="row mb-4">
+    <div class="col-sm-4">
+        <div class="card text-white bg-warning mb-3 text-center">
+            <div class="card-body">
+                <h5>Pending</h5>
+                <p class="display-6">@totalPending</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card text-white bg-success mb-3 text-center">
+            <div class="card-body">
+                <h5>Approved</h5>
+                <p class="display-6">@totalApproved</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card text-white bg-danger mb-3 text-center">
+            <div class="card-body">
+                <h5>Rejected</h5>
+                <p class="display-6">@totalRejected</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped table-hover">
     <thead class="table-dark">
         <tr>
-            <th>Title</th>
             <th>Date</th>
             <th>Status</th>
-            <th style="width:200px;">Actions</th>
+            <th style="width:220px;">Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var activity in Model)
         {
             <tr>
-                
-                <td>@activity.Date.ToShortDateString()</td>
+                <td>@activity.Date.ToString("yyyy-MM-dd")</td>
                 <td>
-                    <span class="badge
-                        @(activity.Status == "Approved" ? "bg-success" :
-                                                activity.Status == "Rejected" ? "bg-danger" : "bg-warning")">
-                    @activity.Status
-                </span>
-            </td>
-            <td>
-                @if (activity.Status == "Pending")
+                    <span class="badge @(activity.Status == "Approved" ? "bg-success" : activity.Status == "Rejected" ? "bg-danger" : "bg-warning text-dark")">
+                        @activity.Status
+                    </span>
+                </td>
+                <td>
+                    @if (activity.Status == "Pending")
                     {
                         <form asp-action="Approve" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@activity.Id" />
-                            <button class="btn btn-success btn-sm">Approve</button>
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
                         </form>
-
                         <form asp-action="Reject" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@activity.Id" />
-                            <button class="btn btn-danger btn-sm">Reject</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                         </form>
                     }
                     else
