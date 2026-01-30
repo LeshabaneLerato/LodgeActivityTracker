@@ -47,14 +47,14 @@ Lodge Activity Tracker follows the **MVC (Model-View-Controller)** design patter
 - **Helpers**: QRCodeHelper for generating QR codes.
 - **Seeders**: AdminSeeder for seeding default admin accounts.
 
-![Architecture Diagram](./architecture.png)
+![Architecture Diagram](./architecture (3).png)
 
 ---
 
 ## Entity Relationship Diagram (ERD)
 The ERD diagram illustrates the database structure for Lodge Activity Tracker:
 
-![ERD Diagram](./requirements.png)
+![ERD Diagram](./Requirements.png)
 
 **Entities:**
 - **User**: IdentityUser (from ASP.NET Identity)
