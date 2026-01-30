@@ -1,52 +1,74 @@
 ﻿using LodgeActivityTracker.Data;
+using LodgeActivityTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Authorize(Roles = "Admin")]
-public class AdminController : Controller
+namespace LodgeActivityTracker.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public AdminController(ApplicationDbContext context)
+    [Authorize(Roles = "Admin")]
+    public class AdminController : Controller
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    // ✅ THIS FIXES /Admin/Dashboard NOT FOUND
-    [HttpGet]
-    public async Task<IActionResult> Dashboard()
-    {
-        var activities = await _context.Activities
-            .OrderByDescending(a => a.Date)
-            .ToListAsync();
+        public AdminController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-        return View(activities); // IMPORTANT
-    }
+        public async Task<IActionResult> Dashboard()
+        {
+            var activities = await _context.Activities
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+            return View(activities);
+        }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Approve(int id)
-    {
-        var activity = await _context.Activities.FindAsync(id);
-        if (activity == null) return NotFound();
+        // GET: /Admin/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        activity.Status = "Approved";
-        await _context.SaveChangesAsync();
+        // POST: /Admin/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Activity activity)
+        {
+            if (ModelState.IsValid)
+            {
+                activity.Status = "Approved"; // Admin-created activities are auto-approved
+                _context.Add(activity);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Dashboard));
+            }
+            return View(activity);
+        }
 
-        return RedirectToAction(nameof(Dashboard));
-    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var activity = await _context.Activities.FindAsync(id);
+            if (activity != null)
+            {
+                activity.Status = "Approved";
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Dashboard));
+        }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Reject(int id)
-    {
-        var activity = await _context.Activities.FindAsync(id);
-        if (activity == null) return NotFound();
-
-        activity.Status = "Rejected";
-        await _context.SaveChangesAsync();
-
-        return RedirectToAction(nameof(Dashboard));
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reject(int id)
+        {
+            var activity = await _context.Activities.FindAsync(id);
+            if (activity != null)
+            {
+                activity.Status = "Rejected";
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Dashboard));
+        }
     }
 }

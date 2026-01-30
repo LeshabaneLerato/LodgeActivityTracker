@@ -3,13 +3,13 @@ using LodgeActivityTracker.Data.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
+// ✅ Add DB context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity
+// ✅ Add Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -19,39 +19,35 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-builder.Services.AddControllersWithViews();
-
-// Add services to the container.
+// ✅ Add MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ✅ Configure HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); // 🔑 MUST COME BEFORE Authorization
+app.UseAuthentication(); // MUST come before Authorization
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+// ✅ Default route
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// ✅ Seed Roles and Default Users (Admin / Guest / User)
 using (var scope = app.Services.CreateScope())
 {
-    await AdminSeeder.SeedAdminAsync(scope.ServiceProvider);
+    var services = scope.ServiceProvider;
+    await DatabaseSeeder.SeedAsync(services); // seeds roles + admin + guest + user
 }
 
 app.Run();

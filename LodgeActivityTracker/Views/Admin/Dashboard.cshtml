@@ -9,7 +9,6 @@
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
-            
             <th>Date</th>
             <th>Status</th>
             <th style="width:200px;">Actions</th>
@@ -19,12 +18,11 @@
         @foreach (var activity in Model)
         {
             <tr>
-                
                 <td>@activity.Date.ToShortDateString()</td>
                 <td>
                     <span class="badge
-                        @(activity.Status == "Approved" ? "bg-success" :
-                                                activity.Status == "Rejected" ? "bg-danger" : "bg-warning")">
+                            @(activity.Status == "Approved" ? "bg-success" :
+                                                    activity.Status == "Rejected" ? "bg-danger" : "bg-warning")">
                     @activity.Status
                 </span>
             </td>
@@ -33,12 +31,12 @@
                     {
                         <form asp-action="Approve" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@activity.Id" />
-                            <button class="btn btn-success btn-sm">Approve</button>
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
                         </form>
 
                         <form asp-action="Reject" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@activity.Id" />
-                            <button class="btn btn-danger btn-sm">Reject</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                         </form>
                     }
                     else

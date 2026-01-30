@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<h2>Access Denied</h2>
+
+<div class="alert alert-warning">
+    <p>You do not have permission to access this page.</p>
+</div>
+
+@if (ViewData["ReturnUrl"] != null)
+{
+    <p>
+        <a href="@ViewData["ReturnUrl"]" class="btn btn-secondary">Return to Previous Page</a>
+    </p>
+}
+
+<p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Return to Home</a>
+</p>

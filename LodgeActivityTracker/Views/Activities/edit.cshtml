@@ -1,46 +1,56 @@
-﻿@model Activity
+﻿@model LodgeActivityTracker.Models.Activity
+
 @{
     ViewData["Title"] = "Edit Activity";
 }
 
-<h2>Edit Activity</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark text-center">
+                Edit Activity
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
 
-<form asp-action="Edit" method="post">
-    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label asp-for="ActivityName" class="form-label"></label>
+                        <input asp-for="ActivityName" class="form-control" />
+                        <span asp-validation-for="ActivityName" class="text-danger"></span>
+                    </div>
 
-    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Date" class="form-label"></label>
+                        <input asp-for="Date" type="date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
 
-    <div class="mb-3">
-        <label asp-for="ActivityName" class="form-label"></label>
-        <input asp-for="ActivityName" class="form-control" />
-        <span asp-validation-for="ActivityName" class="text-danger"></span>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label"></label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="">--Select Status--</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Save Changes</button>
+                    <a asp-action="Dashboard" class="btn btn-secondary w-100 mt-2">Cancel</a>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Date" class="form-label"></label>
-        <input asp-for="Date" type="date" class="form-control" />
-        <span asp-validation-for="Date" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Status" class="form-label"></label>
-        <select asp-for="Status" class="form-select">
-            <option value="Pending" selected="@Model.Status == " Pending"">Pending</option>
-            <option value="Completed" selected="@Model.Status == " Completed"">Completed</option>
-            <option value="Cancelled" selected="@Model.Status == " Cancelled"">Cancelled</option>
-        </select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
