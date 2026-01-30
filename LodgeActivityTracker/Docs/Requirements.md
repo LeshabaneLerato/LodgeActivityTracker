@@ -55,7 +55,9 @@ The Lodge Activity Tracker is a web-based application designed to manage lodge-r
 - Browser: Chrome, Firefox, Edge
 
 ## 5. ERD Diagram
-![ERD Diagram](requirements.png)
+Below is the ERD diagram representing the database structure for the Lodge Activity Tracker:
+
+![ERD Diagram](./Requirements.png)
 
 **Entities:**
 - **User**: IdentityUser (from ASP.NET Identity)
@@ -64,11 +66,18 @@ The Lodge Activity Tracker is a web-based application designed to manage lodge-r
   - Title
   - Description
   - DateTime
-  - Status
+  - StatusId (FK → ActivityStatus)
+  - ApprovalId (FK → ActivityApproval)
   - QRCode
 - **ActivityStatus**
+  - Id
+  - Name (Pending, Approved, Rejected)
 - **ActivityApproval**
+  - Id
+  - ApprovedBy (FK → Admin)
+  - ApprovedDate
 
-Relationships:
-- User ↔ Activities (Many-to-Many if tracking attendance)
-- Admin ↔ Activities (One-to-Many)
+**Relationships:**
+- ActivityStatus ↔ Activity (1:N)
+- ActivityApproval ↔ Activity (1:1)
+- User ↔ Activity (Many-to-Many for attendance)
