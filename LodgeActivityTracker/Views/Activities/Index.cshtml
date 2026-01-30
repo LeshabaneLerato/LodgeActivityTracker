@@ -1,30 +1,36 @@
 ﻿@model IEnumerable<LodgeActivityTracker.Models.Activity>
+@{
+    ViewData["Title"] = "Approved Activities";
+}
 
 <h2>Approved Activities</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Activity</a>
-</p>
+@if (User.IsInRole("Guest"))
+{
+    <p>You are logged in as a guest. You can only view approved activities.</p>
+}
+
+@if (User.IsInRole("User"))
+{
+    <p>You are logged in as a user. You can view approved activities only.</p>
+}
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Date</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th>Description</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                
                 <td>@item.Date.ToShortDateString()</td>
                 <td>@item.Status</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
+                
+                <td>@item.Description</td>
             </tr>
         }
     </tbody>

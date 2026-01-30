@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "User Login";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-4">
         <div class="card shadow">
-            <div class="card-header bg-dark text-white text-center">
-                Login
+            <div class="card-header text-center bg-primary text-white">
+                User Login
             </div>
             <div class="card-body">
                 @if (ViewBag.Error != null)
@@ -14,26 +14,36 @@
                     <div class="alert alert-danger">@ViewBag.Error</div>
                 }
 
-                <form asp-action="Login" method="post">
+                <form asp-action="Login" asp-controller="Account" method="post">
                     @Html.AntiForgeryToken()
+
                     <div class="mb-3">
                         <label>Email</label>
                         <input name="email" type="email" class="form-control" required />
                     </div>
+
                     <div class="mb-3">
                         <label>Password</label>
                         <input name="password" type="password" class="form-control" required />
                     </div>
+
                     <div class="mb-3 form-check">
                         <input type="checkbox" name="rememberMe" class="form-check-input" />
                         <label class="form-check-label">Remember Me</label>
                     </div>
-                    <button type="submit" class="btn btn-dark w-100">Login</button>
-                    <p class="mt-2 text-center">
-                        Don't have an account? <a asp-action="Register">Register</a><br />
-                        Or <a asp-action="GuestLogin">Login as Guest</a>
-                    </p>
+
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
                 </form>
+
+                <hr />
+
+                <p class="text-center">
+                    Don't have an account? <a asp-action="Register" asp-controller="Account">Register here</a>
+                </p>
+
+                <p class="text-center">
+                    Or <a asp-action="GuestLogin" asp-controller="Account">Login as Guest</a>
+                </p>
             </div>
         </div>
     </div>
