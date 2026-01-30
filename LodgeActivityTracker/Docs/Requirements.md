@@ -1,72 +1,120 @@
-﻿# Lodge Activity Tracker – System Requirements and Architecture
+﻿# Lodge Activity Tracker - Requirements
 
-## 1. System Overview
-Lodge Activity Tracker is a web-based application developed using **ASP.NET Core MVC**.  
-The system is designed to manage lodge activities, track attendance via QR codes, approve activities, and provide an admin dashboard for centralized management.
-
----
+## 1. Introduction
+The Lodge Activity Tracker (LAT) is a web-based system designed to manage lodge activities, staff, guests, and reporting efficiently. The system provides role-based access, activity scheduling, booking management, and analytics.
 
 ## 2. Functional Requirements
 
-1. The system shall allow admins to add, edit, view, and delete lodge activities.
-2. The system shall store activity details including title, description, date & time, status, and QR code.
-3. The system shall generate a QR code for each activity for attendance tracking.
-4. The system shall allow admins to approve or reject activities.
-5. The system shall track user attendance for each activity using QR codes.
-6. The system shall display a dashboard with summary information such as total activities, pending approvals, and approved activities.
-7. The system shall provide secure login for admins using ASP.NET Identity.
-8. The system shall enforce role-based access control for admin and user operations.
+### 2.1 User Management
+- Admin can create, update, and delete users (Staff, Guests).
+- Role-based access control: Admin, Staff, Guest.
+- Password management and authentication (login/logout).
 
----
+### 2.2 Activity Management
+- Admin/Staff can create, update, and delete activities.
+- Activities have:
+  - Name, description, date, start/end time
+  - Location and capacity
+  - Created by Admin/Staff
+- Assign staff to specific activities.
+
+### 2.3 Booking Management
+- Guests can view available activities on Home page.
+- Guests can book activities (future extension).
+- System tracks attendee count to prevent overbooking.
+
+### 2.4 Pages / Modules
+1. **Home Page**
+   - Displays upcoming activities.
+   - Accessible to all users.
+2. **Add Activity Page**
+   - Form to create new activities (Admin/Staff only).
+3. **Dashboard**
+   - View, edit, delete activities.
+   - View attendee stats.
+4. **Admin Login**
+   - Authentication for Admin access.
+
+### 2.5 Notifications
+- Email notifications for bookings, updates, or cancellations.
+
+### 2.6 Reporting
+- Admin can generate activity reports.
+- Export as PDF or Excel.
+
+### 2.7 Security
+- HTTPS communication.
+- Password hashing and secure storage.
+- Role-based access control.
 
 ## 3. Non-Functional Requirements
+- **Performance:** Support up to 500 concurrent users.
+- **Usability:** Intuitive user interface.
+- **Availability:** 99% uptime.
+- **Scalability:** Modular system to add lodges or modules.
+- **Maintainability:** Easy updates and bug fixes.
+- **Compliance:** GDPR/POPIA regulations.
 
-1. The system shall be easy to use and user-friendly.
-2. The system shall validate all user input.
-3. The system shall store data securely using a relational database.
-4. The system shall provide acceptable response time for all operations.
-5. The system shall be maintainable, scalable, and extensible.
-6. The system shall follow MVC architectural best practices.
+## 4. Activity Model
 
----
+| Field        | Type       | Description                          |
+|--------------|-----------|--------------------------------------|
+| id           | Integer   | Unique identifier                     |
+| title        | String    | Name of the activity                  |
+| description  | Text      | Details of the activity               |
+| date         | Date      | Date of the activity                  |
+| start_time   | Time      | Start time                            |
+| end_time     | Time      | End time                              |
+| location     | String    | Activity location                      |
+| capacity     | Integer   | Max number of participants            |
+| created_by   | User (FK) | Admin/Staff who created the activity |
+| created_at   | DateTime  | Timestamp of creation                 |
+| updated_at   | DateTime  | Timestamp of last update              |
 
-## 4. Entity Relationship Diagram (ERD)
+## 5. Use Case / Interaction Diagram
 
-```mermaid
-erDiagram
-    USER ||--o{ USER_ACTIVITY : attends
-    ACTIVITY ||--|{ USER_ACTIVITY : includes
-    ACTIVITY ||--|{ ACTIVITY_APPROVAL : approved_by
-    ACTIVITY_STATUS ||--o{ ACTIVITY : has_status
-
-    USER {
-        int UserId
-        string UserName
-        string Email
-    }
-
-    ACTIVITY {
-        int ActivityId
-        string Title
-        string Description
-        date DateTime
-        string QRCode
-    }
-
-    USER_ACTIVITY {
-        int UserActivityId
-        int UserId
-        int ActivityId
-        date AttendanceDate
-    }
-
-    ACTIVITY_STATUS {
-        int StatusId
-        string Name
-    }
-
-    ACTIVITY_APPROVAL {
-        int ApprovalId
-        int ApprovedBy (FK → Admin)
-        date ApprovedDate
-    }
+```plaintext
+        +------------------+
+        |      Admin       |
+        +------------------+
+        | Add/Edit/Delete  |
+        | Activities       |
+        | View Dashboard   |
+        +------------------+
+                |
+                v
+        +------------------+
+        |    Activity      |
+        +------------------+
+        | title, desc, date|
+        | start/end time   |
+        | location, capacity|
+        | created_by       |
+        +------------------+
+           ^          ^
+           |          |
+           |          |
++----------------+  +----------------+
+|    Dashboard   |  |    Add Activity |
++----------------+  +----------------+
+| View/Edit/Delete|  | Create activity|
+| Activities     |  | form           |
++----------------+  +----------------+
+           ^
+           |
+           v
+        +------------------+
+        |      Home        |
+        +------------------+
+        | Display upcoming |
+        | activities       |
+        +------------------+
+           ^
+           |
+           v
+        +------------------+
+        |      Guest       |
+        +------------------+
+        | View Activities  |
+        | Book Activities  |
+        +------------------+
