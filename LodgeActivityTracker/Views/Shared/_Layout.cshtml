@@ -1,5 +1,6 @@
 ﻿@using LodgeActivityTracker.Helpers
 @using LodgeActivityTracker.Models
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,6 @@
     <link rel="stylesheet" href="~/LodgeActivityTracker.styles.css" asp-append-version="true" />
 
     <style>
-        /* QR Box Styling */
         #qrBox {
             position: fixed;
             bottom: 70px;
@@ -32,149 +32,159 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
-            #qrBox.show {
-                display: block;
-                opacity: 1;
-                transform: translateY(0);
-            }
+        #qrBox.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-            #qrBox img {
-                width: 120px;
-                max-width: 30vw;
-                height: auto;
-                border-radius: 10px;
-            }
+        #qrBox img {
+            width: 120px;
+            max-width: 40vw;
+            border-radius: 10px;
+        }
 
         #qrToggle {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1100;
-      
         }
-
-        #qrBox img {
-            max-width: 40vw;
-        }
-
-        
     </style>
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-4">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo.png" alt="Logo" class="me-2" style="height:40px;">
-                    LodgeActivityTracker
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Activities" asp-action="Index">Activities</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Activities" asp-action="Create">Add Activity</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-4">
+        <div class="container-fluid">
+
+            <a class="navbar-brand fw-bold d-flex align-items-center"
+               asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo.png" class="me-2" style="height:40px;">
+                LodgeActivityTracker
+            </a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Activities" asp-action="Index">Activities</a>
+                    </li>
+
+                    @if (User.IsInRole("Admin"))
+                    {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Login">
-                                Admin Login
-                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin" asp-action="Create">Add Activity</a>
+                        </li>
+                    }
+
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Admin Login</a>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Account" asp-action="Register">
-                                Register Guests/ users
+                                Register User / Guest
                             </a>
                         </li>
-
-
-                    </ul>
-                </div>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-link nav-link">Logout</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
-    <div class="container">
-        @if (TempData["SuccessMessage"] != null)
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted py-3 mt-5">
+    <div class="container text-center">
+        &copy; @DateTime.Now.Year - LodgeActivityTracker
+    </div>
+</footer>
+
+@{
+    var path = Context.Request.Path.Value ?? "";
+    string qrCodeImage = "";
+    string currentUrl = "";
+
+    bool isPublicPage =
+        !path.StartsWith("/Admin") &&
+        !path.StartsWith("/Account") &&
+        !path.Contains("Dashboard");
+
+    if (isPublicPage)
+    {
+        var host = Context.Request.Host.Host;
+        var port = Context.Request.Host.Port;
+
+        if (host == "localhost")
         {
-            <div class="alert alert-success alert-dismissible fade show mt-2">
-                <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            currentUrl = $"http://192.168.1.154:{port}{path}";
         }
-        @if (TempData["ErrorMessage"] != null)
+        else
         {
-            <div class="alert alert-danger alert-dismissible fade show mt-2">
-                <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{path}";
         }
 
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        qrCodeImage = QRCodeHelper.GenerateQRCodeBase64(currentUrl);
+    }
+}
+
+@if (!string.IsNullOrEmpty(qrCodeImage))
+{
+    <div id="qrToggle">
+        <button class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-qr-code"></i>
+        </button>
     </div>
 
-    <footer class="border-top footer text-muted py-3 mt-5">
-        <div class="container text-center">
-            &copy; @DateTime.Now.Year - LodgeActivityTracker - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <div id="qrBox">
+        <a href="@currentUrl" target="_blank">
+            <img src="@qrCodeImage" />
+        </a>
+        <p class="small mt-1 mb-1">Scan or click to open</p>
+        <button class="btn btn-sm btn-outline-primary" id="copyUrlBtn">
+            Copy URL
+        </button>
+    </div>
+}
 
-    @* QR Code Razor Logic *@
-    @{
-        var pageTitle = ViewData["Title"]?.ToString() ?? "";
-        string qrCodeImage = "";
-        string currentUrl = "";
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-        if (!pageTitle.Contains("Dashboard"))
-        {
-            currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
-            qrCodeImage = QRCodeHelper.GenerateQRCodeBase64(currentUrl);
-        }
-    }
+<script>
+    $("#qrToggle button").click(() => $("#qrBox").toggleClass("show"));
+    $("#copyUrlBtn").click(() => navigator.clipboard.writeText("@currentUrl"));
+</script>
 
-    @if (!string.IsNullOrEmpty(qrCodeImage))
-    {
-        <div id="qrToggle">
-            <button class="btn btn-outline-secondary btn-sm" title="Show/Hide QR Code">
-                <i class="bi bi-qr-code"></i>
-            </button>
-        </div>
-
-        <div id="qrBox">
-            <a href="@currentUrl" target="_blank">
-                <img src="@qrCodeImage" alt="QR Code" />
-            </a>
-            <p class="small mt-1 mb-1">Scan or click to open this page</p>
-            <button class="btn btn-sm btn-outline-primary" id="copyUrlBtn">
-                <i class="bi bi-clipboard"></i> Copy URL
-            </button>
-            <a href="@qrCodeImage" download="QRCode.png" class="btn btn-sm btn-outline-success mt-1">
-                <i class="bi bi-download"></i> Download
-            </a>
-        </div>
-    }
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // QR Toggle with slide/fade
-        $(document).ready(function () {
-            $("#qrToggle button").click(function () {
-                $("#qrBox").toggleClass("show");
-            });
-
-            // Copy URL to clipboard
-            $("#copyUrlBtn").click(function () {
-                navigator.clipboard.writeText("@currentUrl")
-                    .then(() => alert("URL copied to clipboard!"))
-                    .catch(() => alert("Failed to copy URL"));
-            });
-        });
-    </script>
-    @await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

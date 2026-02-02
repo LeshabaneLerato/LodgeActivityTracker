@@ -96,6 +96,43 @@ namespace LodgeActivityTracker.Controllers
             await _signInManager.SignInAsync(guest, isPersistent: false);
             return RedirectToAction("Index", "Activities");
         }
+        // GET: /Account/AdminLogin
+        [HttpGet]
+        public IActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        // POST: /Account/AdminLogin
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminLogin(string email, string password)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                return View();
+
+            var result = await _signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Dashboard", "Admin");
+                }
+                else
+                {
+                    // Not an admin, logout and show error
+                    await _signInManager.SignOutAsync();
+                    ViewBag.Error = "You do not have admin privileges.";
+                    return View();
+                }
+            }
+
+            ViewBag.Error = "Invalid login attempt.";
+            return View();
+        }
+
 
         // POST: /Account/Logout
         [HttpPost]

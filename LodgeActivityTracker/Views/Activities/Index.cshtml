@@ -1,36 +1,24 @@
-﻿@model IEnumerable<LodgeActivityTracker.Models.Activity>
-@{
-    ViewData["Title"] = "Approved Activities";
-}
+﻿@model IEnumerable<Activity>
 
-<h2>Approved Activities</h2>
-
-@if (User.IsInRole("Guest"))
-{
-    <p>You are logged in as a guest. You can only view approved activities.</p>
-}
-
-@if (User.IsInRole("User"))
-{
-    <p>You are logged in as a user. You can view approved activities only.</p>
-}
+<h2 class="mb-3">Activities</h2>
 
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>Name</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Description</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var activity in Model)
         {
             <tr>
-                <td>@item.Date.ToShortDateString()</td>
-                <td>@item.Status</td>
-                
-                <td>@item.Description</td>
+                <td>@activity.ActivityName</td>
+                <td>@activity.Date.ToShortDateString()</td>
+                <td>
+                    <span class="badge bg-success">@activity.Status</span>
+                </td>
             </tr>
         }
     </tbody>

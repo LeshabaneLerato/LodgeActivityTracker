@@ -11,7 +11,7 @@
         <tr>
             <th>Date</th>
             <th>Status</th>
-            <th style="width:200px;">Actions</th>
+            <th style="width:260px;">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -19,29 +19,55 @@
         {
             <tr>
                 <td>@activity.Date.ToShortDateString()</td>
+
                 <td>
                     <span class="badge
                             @(activity.Status == "Approved" ? "bg-success" :
-                                                    activity.Status == "Rejected" ? "bg-danger" : "bg-warning")">
+                                                    activity.Status == "Rejected" ? "bg-danger" : "bg-warning text-dark")">
                     @activity.Status
                 </span>
             </td>
-            <td>
+
+                <td>
                 @if (activity.Status == "Pending")
                     {
-                        <form asp-action="Approve" method="post" class="d-inline">
+                        <form asp-controller="Admin"
+                              asp-action="Approve"
+                              method="post"
+                              class="d-inline">
+                            @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@activity.Id" />
-                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Approve
+                            </button>
                         </form>
 
-                        <form asp-action="Reject" method="post" class="d-inline">
+                        <form asp-controller="Admin"
+                              asp-action="Reject"
+                              method="post"
+                              class="d-inline">
+                            @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@activity.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Reject
+                            </button>
                         </form>
                     }
                     else
                     {
-                        <span class="text-muted">No actions</span>
+                        <a asp-controller="Admin"
+                           asp-action="Edit"
+                           asp-route-id="@activity.Id"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+
+                        <a asp-controller="Admin"
+                           asp-action="Delete"
+                           asp-route-id="@activity.Id"
+                           class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
                     }
                 </td>
             </tr>
