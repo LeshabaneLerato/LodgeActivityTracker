@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "User Login";
+    ViewData["Title"] = "Admin Login";
 }
 
 <div class="row justify-content-center mt-5">
     <div class="col-md-4">
         <div class="card shadow">
-            <div class="card-header text-center bg-primary text-white">
-                User Login
+            <div class="card-header text-center bg-dark text-white">
+                Admin Login
             </div>
             <div class="card-body">
                 @if (ViewBag.Error != null)
@@ -16,6 +16,7 @@
 
                 <form method="post">
                     @Html.AntiForgeryToken()
+
                     <div class="mb-3">
                         <label>Email</label>
                         <input name="email" type="email" class="form-control" required />
@@ -26,19 +27,8 @@
                         <input name="password" type="password" class="form-control" required />
                     </div>
 
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" name="rememberMe" class="form-check-input" />
-                        <label class="form-check-label">Remember Me</label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <button type="submit" class="btn btn-dark w-100">Login</button>
                 </form>
-
-                <hr />
-                <p class="text-center">
-                    <a asp-action="Register">Register</a> |
-                    <a asp-action="GuestLogin">Login as Guest</a>
-                </p>
             </div>
         </div>
     </div>
